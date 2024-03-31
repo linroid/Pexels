@@ -15,6 +15,7 @@ class AndroidApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        Startup.run()
         INSTANCE = this
     }
 }
