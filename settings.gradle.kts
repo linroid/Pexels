@@ -1,5 +1,6 @@
 rootProject.name = "Pexels"
 include(":composeApp")
+include(":pexels-api")
 
 pluginManagement {
     repositories {
