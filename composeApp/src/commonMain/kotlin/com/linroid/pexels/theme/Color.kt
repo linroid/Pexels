@@ -69,3 +69,14 @@ internal val md_theme_dark_scrim = Color(0xFF000000)
 
 
 internal val seed = Color(0xFF2C3639)
+fun parseColor(string: String): Color {
+	if (string.isEmpty() || string[0] != '#' || string.length > 7) {
+		return Color.Unspecified
+	}
+	val hex = string.substring(1, string.length - 1)
+	return if (hex.length > 6) {
+		Color(hex.toLong(16))
+	} else {
+		Color(hex.toLong(16) or 0xFF000000)
+	}
+}
