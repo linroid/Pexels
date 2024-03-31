@@ -152,6 +152,10 @@ compose.desktop {
     }
 }
 
+compose.experimental {
+    web.application {}
+}
+
 buildConfig {
     // BuildConfig configuration here.
     // https://github.com/gmazzo/gradle-buildconfig-plugin#usage-in-kts
