@@ -67,6 +67,7 @@ kotlin {
             implementation(libs.coil)
             implementation(libs.napier)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.koin.core)
             implementation(project(":pexels-api"))
         }
 
