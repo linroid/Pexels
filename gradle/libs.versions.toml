@@ -6,13 +6,13 @@ agp = "8.3.1"
 androidx-activityCompose = "1.8.2"
 androidx-uiTest = "1.6.4"
 voyager = "1.1.0-alpha03"
-composeImageLoader = "1.7.8"
 napier = "2.7.1"
 buildConfig = "4.1.1"
 kotlinx-coroutines = "1.8.0"
 ktor = "3.0.0-wasm2"
 kotlinx-serialization = "1.6.3"
 koin = "3.5.3"
+coil = "3.0.0-alpha05"
 
 [libraries]
 
@@ -20,7 +20,6 @@ androidx-activityCompose = { module = "androidx.activity:activity-compose", vers
 androidx-testManifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-uiTest" }
 androidx-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "androidx-uiTest" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
-composeImageLoader = { module = "io.github.qdsfdhvh:image-loader", version.ref = "composeImageLoader" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
@@ -35,6 +34,7 @@ ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "kto
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 
 [plugins]
 
