@@ -1,6 +1,6 @@
+import com.android.build.api.dsl.ManagedVirtualDevice
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import com.android.build.api.dsl.ManagedVirtualDevice
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
@@ -21,7 +21,7 @@ kotlin {
                 freeCompilerArgs += "-Xjdk-release=${JavaVersion.VERSION_1_8}"
             }
         }
-        //https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-test.html
+        // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-test.html
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         instrumentedTestVariant {
             sourceSetTree.set(KotlinSourceSetTree.test)
@@ -67,11 +67,7 @@ kotlin {
             implementation(libs.coil)
             implementation(libs.napier)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.logging)
-            implementation(libs.ktor.client.auth)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.client.serialization.kotlinx.json)
+            implementation(project(":pexels-api"))
         }
 
         commonTest.dependencies {
@@ -119,7 +115,7 @@ android {
         manifest.srcFile("src/androidMain/AndroidManifest.xml")
         res.srcDirs("src/androidMain/res")
     }
-    //https://developer.android.com/studio/test/gradle-managed-devices
+    // https://developer.android.com/studio/test/gradle-managed-devices
     @Suppress("UnstableApiUsage")
     testOptions {
         managedDevices.devices {
@@ -157,4 +153,7 @@ compose.desktop {
 buildConfig {
     // BuildConfig configuration here.
     // https://github.com/gmazzo/gradle-buildconfig-plugin#usage-in-kts
+    useKotlinOutput { topLevelConstants = true }
+    packageName("com.linroid.pexels")
+    buildConfigField("PEXELS_API_KEY", "ScVpu45vZekZ0ncguaBKiwyJU0MBMRf4xMzJTkyoZwyEDL0L4LNTcVoK")
 }

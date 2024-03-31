@@ -7,7 +7,7 @@ androidx-activityCompose = "1.8.2"
 androidx-uiTest = "1.6.4"
 voyager = "1.1.0-alpha03"
 napier = "2.7.1"
-buildConfig = "4.1.1"
+buildConfig = "5.3.5"
 kotlinx-coroutines = "1.8.0"
 ktor = "3.0.0-wasm2"
 kotlinx-serialization = "1.6.3"
@@ -41,5 +41,6 @@ coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
