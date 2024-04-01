@@ -67,6 +67,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.screenmodel)
+            implementation(libs.voyager.transitions)
             implementation(libs.coil)
             implementation(libs.coil.network.ktor)
             implementation(libs.napier)
