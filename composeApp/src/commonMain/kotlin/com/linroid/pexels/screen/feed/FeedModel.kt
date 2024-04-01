@@ -1,4 +1,4 @@
-package com.linroid.pexels.screen.curated
+package com.linroid.pexels.screen.feed
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class CuratedModel : ScreenModel, KoinComponent {
+class FeedModel : ScreenModel, KoinComponent {
 
 	private val coroutineScope = MainScope()
 	private val api: PexelsApi by inject()

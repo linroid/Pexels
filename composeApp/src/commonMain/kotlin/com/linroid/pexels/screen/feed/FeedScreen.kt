@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.linroid.pexels.screen.curated
+package com.linroid.pexels.screen.feed
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -68,10 +68,10 @@ class CuratedScreen : Screen {
 	@Composable
 	override fun Content() {
 		Scaffold(topBar = { PexelsAppBar() }) {
-			val curatedModel = rememberScreenModel { CuratedModel() }
+			val feedModel = rememberScreenModel { FeedModel() }
 			val pullToRefreshState = rememberPullToRefreshState()
-			LaunchedEffect(curatedModel.uiState) {
-				if (curatedModel.uiState == CuratedModel.UiState.Refreshing) {
+			LaunchedEffect(feedModel.uiState) {
+				if (feedModel.uiState == FeedModel.UiState.Refreshing) {
 					pullToRefreshState.startRefresh()
 				} else {
 					pullToRefreshState.endRefresh()
@@ -79,7 +79,7 @@ class CuratedScreen : Screen {
 			}
 			LaunchedEffect(pullToRefreshState.isRefreshing) {
 				if (pullToRefreshState.isRefreshing) {
-					curatedModel.refresh()
+					feedModel.refresh()
 				}
 			}
 			BoxWithConstraints(
@@ -100,16 +100,16 @@ class CuratedScreen : Screen {
 						vertical = staggeredGridStyle.verticalPadding
 					)
 				) {
-					items(curatedModel.photos, key = { photo -> photo.id }) { photo ->
+					items(feedModel.photos, key = { photo -> photo.id }) { photo ->
 						PhotoItem(photo, staggeredGridStyle)
 					}
-					if (curatedModel.uiState == CuratedModel.UiState.Idle
-						&& curatedModel.uiState != CuratedModel.UiState.End
-						|| curatedModel.uiState == CuratedModel.UiState.LoadingMore
+					if (feedModel.uiState == FeedModel.UiState.Idle
+						&& feedModel.uiState != FeedModel.UiState.End
+						|| feedModel.uiState == FeedModel.UiState.LoadingMore
 					) {
 						item {
-							LaunchedEffect(curatedModel.uiState) {
-								curatedModel.loadMore()
+							LaunchedEffect(feedModel.uiState) {
+								feedModel.loadMore()
 							}
 							Card(
 								Modifier.padding(bottom = 8.dp, start = 2.dp, end = 2.dp),
