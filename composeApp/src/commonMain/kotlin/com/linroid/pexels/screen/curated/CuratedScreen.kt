@@ -3,6 +3,8 @@
 package com.linroid.pexels.screen.curated
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -44,12 +46,23 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import coil3.compose.AsyncImage
 import com.linroid.pexels.api.model.Photo
-import com.linroid.pexels.theme.parseColor
-import io.github.aakira.napier.Napier
 import org.jetbrains.compose.resources.stringResource
 import pexels.composeapp.generated.resources.Res
 import pexels.composeapp.generated.resources.app_name
+import kotlin.math.absoluteValue
 
+val avatarColors =
+	arrayOf(
+		Color(0xFF006064),
+		Color(0xFF01579B),
+		Color(0xFF004D40),
+		Color(0xFF1B5E20),
+		Color(0xFF827717),
+		Color(0xFF616161),
+		Color(0xFFBF360C),
+		Color(0xFF455A64),
+		Color(0xFF512DA8),
+	)
 class CuratedScreen : Screen {
 	@Composable
 	override fun Content() {
@@ -115,35 +128,41 @@ private fun PexelsAppBar() {
 private fun PhotoItem(photo: Photo) {
 	val density = LocalDensity.current
 	Card(
-		Modifier.padding(bottom = 8.dp, start = 2.dp, end = 2.dp),
+		Modifier.padding(bottom = 8.dp, start = 2.dp, end = 2.dp)
+			.clickable {
+			},
 		shape = RoundedCornerShape(4.dp)
 	) {
 		Column {
 			BoxWithConstraints {
 				val aspectRatio = photo.width.toFloat() / photo.height
 				AsyncImage(
-					model = photo.src.medium,
-					contentDescription = null,
 					modifier = Modifier.fillMaxWidth()
-						.height(with(density) { (constraints.maxWidth / aspectRatio).toDp() })
-						.background(parseColor(photo.avgColor)),
-					onState = { state ->
-						Napier.i("State changes to $state")
-					})
+						.height(with(density) { (constraints.maxWidth / aspectRatio).toDp() }),
+					model = photo.src.medium,
+					contentDescription = photo.alt,
+				)
 			}
 			Row(
 				Modifier.padding(4.dp),
 				verticalAlignment = Alignment.CenterVertically
 			) {
-				AsyncImage(
-					model = photo.photographerUrl,
-					contentDescription = photo.photographer,
-					modifier = Modifier.size(32.dp).clip(CircleShape).background(Color.Red)
-				)
+				Box(
+					Modifier.size(28.dp)
+						.clip(CircleShape)
+						.background(avatarColors[(photo.photographer.hashCode() % avatarColors.size).absoluteValue])
+				) {
+					Text(
+						photo.photographer.firstOrNull()?.toString()?.uppercase() ?: "",
+						modifier = Modifier.align(Alignment.Center),
+						style = MaterialTheme.typography.titleMedium,
+						color = Color.White
+					)
+				}
 				Spacer(Modifier.width(4.dp))
 				Text(
 					text = photo.photographer,
-					style = MaterialTheme.typography.labelSmall,
+					style = MaterialTheme.typography.labelMedium,
 					maxLines = 1,
 					overflow = TextOverflow.Ellipsis
 				)

@@ -13,6 +13,8 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
 }
 
+applyKtorWasmWorkaround(libs.versions.ktor.get())
+
 kotlin {
     androidTarget {
         compilations.all {
@@ -66,6 +68,7 @@ kotlin {
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.screenmodel)
             implementation(libs.coil)
+            implementation(libs.coil.network.ktor)
             implementation(libs.napier)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.koin.core)
@@ -154,6 +157,20 @@ compose.desktop {
 
 compose.experimental {
     web.application {}
+}
+
+// https://youtrack.jetbrains.com/issue/KTOR-5587
+fun Project.applyKtorWasmWorkaround(version: String) {
+    configurations.all {
+        if (name.startsWith("wasmJs")) {
+            resolutionStrategy.eachDependency {
+                if (requested.group.startsWith("io.ktor") &&
+                    requested.name.startsWith("ktor-client-")) {
+                    useVersion(version)
+                }
+            }
+        }
+    }
 }
 
 buildConfig {
