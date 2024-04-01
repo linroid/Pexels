@@ -157,8 +157,11 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.linroid.pexels"
+            packageName = "Pexels"
             packageVersion = "1.0.0"
+            buildTypes.release.proguard {
+                configurationFiles.from("rules.pro")
+            }
         }
     }
 }
