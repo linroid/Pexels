@@ -12,6 +12,7 @@ kotlinx-coroutines = "1.8.0"
 ktor = "3.0.0-wasm2"
 koin = "3.6.0-wasm-alpha2"
 coil = "3.0.0-alpha06"
+kstore = "0.7.1"
 
 [libraries]
 
@@ -37,6 +38,9 @@ ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "k
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor", version.ref = "coil" }
+kstore = { module = "io.github.xxfast:kstore", version.ref = "kstore" }
+kstore-file = { module = "io.github.xxfast:kstore-file", version.ref = "kstore" }
+kstore-storage = { module = "io.github.xxfast:kstore-storage", version.ref = "kstore" }
 
 [plugins]
 

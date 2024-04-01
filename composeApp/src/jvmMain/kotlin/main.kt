@@ -8,6 +8,7 @@ import java.awt.Dimension
 
 fun main() {
     Startup.run()
+
     application {
         Window(
             title = "Pexels",

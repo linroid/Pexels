@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.linroid.pexels.api.PexelsApi
 import com.linroid.pexels.api.model.Photo
+import com.linroid.pexels.storage.objectStoreOf
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -19,6 +20,7 @@ class FeedModel : ScreenModel, KoinComponent {
 	private val coroutineScope = MainScope()
 	private val api: PexelsApi by inject()
 	private var currentPage: Int = 1
+	private val cache = objectStoreOf<List<Photo>>("curated_photos")
 
 	private val photoIds = mutableSetOf<Int>()
 	private var _photos = mutableStateListOf<Photo>()
@@ -28,6 +30,12 @@ class FeedModel : ScreenModel, KoinComponent {
 	val uiState: UiState get() = _state
 
 	init {
+		coroutineScope.launch {
+			val cachedPhotos = cache.get()
+			if (cachedPhotos != null && _photos.isEmpty()) {
+				_photos.addAll(cachedPhotos)
+			}
+		}
 		refresh()
 	}
 
@@ -51,6 +59,7 @@ class FeedModel : ScreenModel, KoinComponent {
 				_photos.addAll(pagination.photos)
 				photoIds.addAll(pagination.photos.map { it.id }.toSet())
 				_state = UiState.Idle
+				cache.set(pagination.photos)
 			} catch (error: Exception) {
 				Napier.e("Unable to refresh", error)
 				_state = UiState.Error

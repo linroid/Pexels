@@ -73,6 +73,7 @@ kotlin {
             implementation(libs.napier)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.koin.core)
+            implementation(libs.ktor.client.serialization.kotlinx.json)
             implementation(project(":pexels-api"))
         }
 
@@ -88,18 +89,24 @@ kotlin {
             implementation(libs.androidx.activityCompose)
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.kstore)
+            implementation(libs.kstore.file)
         }
 
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.kstore)
+            implementation(libs.kstore.file)
+            implementation("net.harawata:appdirs:1.2.2")
         }
 
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            implementation(libs.kstore)
+            implementation(libs.kstore.file)
         }
-
     }
 }
 
