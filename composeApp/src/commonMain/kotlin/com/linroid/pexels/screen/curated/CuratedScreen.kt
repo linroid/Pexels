@@ -24,7 +24,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -41,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -89,24 +89,20 @@ class CuratedScreen : Screen {
 					.nestedScroll(pullToRefreshState.nestedScrollConnection)
 			) {
 				val density = LocalDensity.current
-				val columnsCount by derivedStateOf {
+				val staggeredGridStyle by derivedStateOf {
 					with(density) {
-						val windowWidth = constraints.maxWidth.toDp()
-						if (windowWidth < 200.dp) {
-							1
-						} else if (windowWidth < 400.dp) {
-							2
-						} else {
-							3
-						}
+						StaggeredGridStyle.fromWidth(constraints.maxWidth.toDp())
 					}
 				}
 				LazyVerticalStaggeredGrid(
-					columns = StaggeredGridCells.Fixed(columnsCount),
-					contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp)
+					columns = StaggeredGridCells.Fixed(staggeredGridStyle.columnCount),
+					contentPadding = PaddingValues(
+						horizontal = staggeredGridStyle.horizontalPadding,
+						vertical = staggeredGridStyle.verticalPadding
+					)
 				) {
 					items(curatedModel.photos, key = { photo -> photo.id }) { photo ->
-						PhotoItem(photo)
+						PhotoItem(photo, staggeredGridStyle)
 					}
 					if (curatedModel.uiState == CuratedModel.UiState.Idle
 						&& curatedModel.uiState != CuratedModel.UiState.End
@@ -157,46 +153,49 @@ private fun PexelsAppBar() {
 }
 
 @Composable
-private fun PhotoItem(photo: Photo) {
+private fun PhotoItem(photo: Photo, staggeredGridStyle: StaggeredGridStyle) {
 	val density = LocalDensity.current
 	Card(
-		Modifier.padding(bottom = 8.dp, start = 2.dp, end = 2.dp)
-			.clickable {
-			},
-		shape = RoundedCornerShape(4.dp)
+		Modifier.padding(
+			bottom = staggeredGridStyle.verticalMargin,
+			start = staggeredGridStyle.horizontalMargin,
+			end = staggeredGridStyle.horizontalMargin
+		),
+		shape = RoundedCornerShape(staggeredGridStyle.cardRadius)
 	) {
-		Column {
+		Column(Modifier.clickable { }) {
 			BoxWithConstraints {
 				val aspectRatio = photo.width.toFloat() / photo.height
 				AsyncImage(
 					modifier = Modifier.fillMaxWidth()
 						.height(with(density) { (constraints.maxWidth / aspectRatio).toDp() }),
 					model = photo.src.medium,
+					contentScale = ContentScale.FillBounds,
 					contentDescription = photo.alt,
 				)
 			}
 			Row(
-				Modifier.padding(4.dp),
+				Modifier.padding(staggeredGridStyle.photographerPadding),
 				verticalAlignment = Alignment.CenterVertically
 			) {
 				Box(
-					Modifier.size(28.dp)
+					Modifier.size(staggeredGridStyle.avatarSize)
 						.clip(CircleShape)
 						.background(avatarColors[(photo.photographer.hashCode() % avatarColors.size).absoluteValue])
 				) {
 					Text(
 						photo.photographer.firstOrNull()?.toString()?.uppercase() ?: "",
 						modifier = Modifier.align(Alignment.Center),
-						style = MaterialTheme.typography.titleMedium,
+						fontSize = staggeredGridStyle.photographerFontSize,
 						color = Color.White
 					)
 				}
-				Spacer(Modifier.width(4.dp))
+				Spacer(Modifier.width(staggeredGridStyle.photographerPadding))
 				Text(
 					text = photo.photographer,
-					style = MaterialTheme.typography.labelMedium,
 					maxLines = 1,
-					overflow = TextOverflow.Ellipsis
+					overflow = TextOverflow.Ellipsis,
+					fontSize = staggeredGridStyle.photographerFontSize,
 				)
 			}
 		}
