@@ -28,7 +28,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
@@ -141,13 +140,6 @@ private fun PexelsAppBar() {
 			title = {
 				Text(stringResource(Res.string.app_name))
 			},
-			colors = TopAppBarColors(
-				containerColor = Color(0xFF07A080),
-				scrolledContainerColor = Color.Unspecified,
-				navigationIconContentColor = Color.White,
-				titleContentColor = Color.White,
-				actionIconContentColor = Color.White
-			),
 		)
 	}
 }
