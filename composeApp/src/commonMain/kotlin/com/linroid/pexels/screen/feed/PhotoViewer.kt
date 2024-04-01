@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntOffset
 import coil3.compose.AsyncImage
 import com.linroid.pexels.api.model.Photo
+import com.linroid.pexels.components.BackHandler
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import pexels.composeapp.generated.resources.Res
@@ -57,6 +58,13 @@ fun PhotoViewer(
 	val density = LocalDensity.current
 	val coroutineScope = rememberCoroutineScope()
 	val transitionProgress = remember { Animatable(if (needTransition) 0f else 1f) }
+	BackHandler {
+		needTransition = true
+		coroutineScope.launch {
+			transitionProgress.animateTo(0f)
+			onExit()
+		}
+	}
 	Scaffold(
 		containerColor = Color.Transparent,
 		topBar = {
