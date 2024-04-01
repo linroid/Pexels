@@ -1,4 +1,4 @@
-package com.linroid.pexels.screen.curated
+package com.linroid.pexels.screen.feed
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
