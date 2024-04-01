@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -32,6 +33,7 @@ import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -67,8 +69,20 @@ class CuratedScreen : Screen {
 	@Composable
 	override fun Content() {
 		Scaffold(topBar = { PexelsAppBar() }) {
+			val curatedModel = rememberScreenModel { CuratedModel() }
 			val pullToRefreshState = rememberPullToRefreshState()
-			val curatedModel = rememberScreenModel { CuratedModel(pullToRefreshState) }
+			LaunchedEffect(curatedModel.uiState) {
+				if (curatedModel.uiState == CuratedModel.UiState.Refreshing) {
+					pullToRefreshState.startRefresh()
+				} else {
+					pullToRefreshState.endRefresh()
+				}
+			}
+			LaunchedEffect(pullToRefreshState.isRefreshing) {
+				if (pullToRefreshState.isRefreshing) {
+					curatedModel.refresh()
+				}
+			}
 			BoxWithConstraints(
 				Modifier.fillMaxSize()
 					.padding(top = it.calculateTopPadding())
@@ -91,8 +105,26 @@ class CuratedScreen : Screen {
 					columns = StaggeredGridCells.Fixed(columnsCount),
 					contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp)
 				) {
-					items(curatedModel.photos.toList(), key = { photo -> photo.id }) { photo ->
+					items(curatedModel.photos, key = { photo -> photo.id }) { photo ->
 						PhotoItem(photo)
+					}
+					if (curatedModel.uiState == CuratedModel.UiState.Idle
+						&& curatedModel.uiState != CuratedModel.UiState.End
+						|| curatedModel.uiState == CuratedModel.UiState.LoadingMore
+					) {
+						item {
+							LaunchedEffect(curatedModel.uiState) {
+								curatedModel.loadMore()
+							}
+							Card(
+								Modifier.padding(bottom = 8.dp, start = 2.dp, end = 2.dp),
+								shape = RoundedCornerShape(4.dp)
+							) {
+								Box(Modifier.fillMaxSize().padding(vertical = 56.dp)) {
+									CircularProgressIndicator(Modifier.align(Alignment.Center))
+								}
+							}
+						}
 					}
 				}
 				PullToRefreshContainer(

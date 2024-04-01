@@ -1,10 +1,14 @@
 package com.linroid.pexels.api
 
 import com.linroid.pexels.api.model.Pagination
+import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -21,6 +25,14 @@ class PexelsApi(apiKey: String) {
 			json(Json {
 				ignoreUnknownKeys = true
 			})
+		}
+		install(Logging) {
+			level = LogLevel.ALL
+			logger = object : Logger {
+				override fun log(message: String) {
+					Napier.i(message)
+				}
+			}
 		}
 		defaultRequest {
 			header(HttpHeaders.Authorization, apiKey)
