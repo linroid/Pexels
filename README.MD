@@ -6,7 +6,7 @@ A multiplatform client for [Pexels](https://www.pexels.com/) photos, powered by 
 | Platform                       | Supported | Screenshot                                         |
 |--------------------------------|-----------|----------------------------------------------------|
 | Desktop(Linux, Windows, macOS) | ✅         | <img src="./screenshots/desktop.png" width="300"/> |
-| Web                            | ✅         | <img src="./screenshots/web.png" width="200"/>     |
+| Web                            | ✅         | <img src="./screenshots/web.png" width="300"/>     |
 | iOS                            | ✅         | <img src="./screenshots/ios.png" width="200"/>     |
 | Android                        | ✅         | <img src="./screenshots/android.png" width="200"/> |
 
