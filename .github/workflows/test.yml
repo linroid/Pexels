@@ -42,7 +42,7 @@ jobs:
         run: ./gradlew cleanTestDebugUnitTest testDebugUnitTest
         if: ${{ matrix.platform == 'android' }}
       - name: iOS Unit Test
-        run: ./gradlew cleanIosX64Test iosX64Test
+        run: ./gradlew cleanIosSimulatorArm64Test iosSimulatorArm64Test
         if: ${{ matrix.platform == 'ios' }}
       - name: Upload HTML reports
         uses: actions/upload-artifact@v3
