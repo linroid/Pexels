@@ -37,13 +37,28 @@ jobs:
         run: chmod +x gradlew
       - name: JVM Unit Test
         run: ./gradlew cleanJvmTest jvmTest
-        if: ${{ matrix.platform == 'linux' || matrix.platform == 'windows' || matrix.platform == 'macos' }}
+        if: ${{ matrix.platform == 'linux' || matrix.platform == 'windows' || matrix.platform == 'macos'}}
       - name: Android Unit Test
         run: ./gradlew cleanTestDebugUnitTest testDebugUnitTest
         if: ${{ matrix.platform == 'android' }}
       - name: iOS Unit Test
         run: ./gradlew cleanIosSimulatorArm64Test iosSimulatorArm64Test
         if: ${{ matrix.platform == 'ios' }}
+      - name: Publish Test Results (ubuntu)
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        with:
+          files: ./**/build/test-results/**/*.xml
+      - name: Publish Test Results (windows)
+        uses: EnricoMi/publish-unit-test-result-action/windows@v2
+        if: ${{ matrix.os == 'windows-latest' }}
+        with:
+          files: ./**/build/test-results/**/*.xml
+      - name: Publish Test Results (macos)
+        uses: EnricoMi/publish-unit-test-result-action/macos@v2
+        if: ${{ matrix.os == 'macos-latest' }}
+        with:
+          files: ./**/build/test-results/**/*.xml
       - name: Upload HTML reports
         uses: actions/upload-artifact@v3
         if: always()
@@ -57,19 +72,19 @@ jobs:
           name: ${{ matrix.platform }}-results-xml.zip
           path: ./**/build/test-results/**/*.xml
 
-  publish-test-results:
-    name: Publish Unit Tests Results
-    needs: test
-    runs-on: ubuntu-latest
-    if: always()
-
-    steps:
-      - name: Download Artifacts
-        uses: actions/download-artifact@v3
-        with:
-          path: artifacts
-
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        with:
-          files: artifacts/**/Test-*.xml
+#  publish-test-results:
+#    name: Publish Unit Tests Results
+#    needs: test
+#    runs-on: ubuntu-latest
+#    if: always()
+#
+#    steps:
+#      - name: Download Artifacts
+#        uses: actions/download-artifact@v3
+#        with:
+#          path: artifacts
+#
+#      - name: Publish Unit Test Results
+#        uses: EnricoMi/publish-unit-test-result-action@v1
+#        with:
+#          files: artifacts/**/*results-xml.zip
