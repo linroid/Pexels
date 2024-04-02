@@ -5,10 +5,10 @@ A multiplatform client for [Pexels](https://www.pexels.com/) photos, powered by 
 
 | Platform                       | Supported | Screenshot                                         |
 |--------------------------------|-----------|----------------------------------------------------|
-| Desktop(Linux, Windows, macOS) | ✅         | <img src="./screenshots/desktop.png" width="150"/> |
-| Web                            | ✅         | <img src="./screenshots/web.png" width="150"/>     |
-| iOS                            | ✅         | <img src="./screenshots/ios.png" width="100"/>     |
-| Android                        | ✅         | <img src="./screenshots/android.png" width="100"/> |
+| Desktop(Linux, Windows, macOS) | ✅         | <img src="./screenshots/desktop.png" width="300"/> |
+| Web                            | ✅         | <img src="./screenshots/web.png" width="200"/>     |
+| iOS                            | ✅         | <img src="./screenshots/ios.png" width="200"/>     |
+| Android                        | ✅         | <img src="./screenshots/android.png" width="200"/> |
 
 You can download prebuilt app file [here](https://github.com/linroid/Pexels/releases/tag/v1.0.0)
 
