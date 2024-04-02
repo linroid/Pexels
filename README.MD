@@ -1,13 +1,18 @@
 # Pexels
+A multiplatform client for [Pexels](https://www.pexels.com/) photos, powered by [Compose Muptiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)
 
 ## Supported Platforms
 
-| Platform                       | Supported | Screenshot                                         | Link    |
-|--------------------------------|-----------|----------------------------------------------------|---------|
-| Desktop(Linux, Windows, macOS) | ✅         | <img src="./screenshots/desktop.png" width="150"/> |         |
-| Web                            | ✅         | <img src="./screenshots/web.png" width="150"/>     |         |
-| iOS                            | ✅         | <img src="./screenshots/ios.png" width="100"/>     |         |
-| Android                        | ✅         | <img src="./screenshots/android.png" width="100"/> |         |
+| Platform                       | Supported | Screenshot                                         |
+|--------------------------------|-----------|----------------------------------------------------|
+| Desktop(Linux, Windows, macOS) | ✅         | <img src="./screenshots/desktop.png" width="150"/> |
+| Web                            | ✅         | <img src="./screenshots/web.png" width="150"/>     |
+| iOS                            | ✅         | <img src="./screenshots/ios.png" width="100"/>     |
+| Android                        | ✅         | <img src="./screenshots/android.png" width="100"/> |
+
+You can download prebuilt app file [here](https://github.com/linroid/Pexels/releases/tag/v1.0.0)
+
+Web version: https://linroid.github.io/Pexels/
 
 ## Features
  - Pagination
