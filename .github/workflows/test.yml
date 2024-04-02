@@ -12,7 +12,7 @@ jobs:
     name: Unit Test
     strategy:
       matrix:
-        platform: [linux, windows, macos, android, ios]
+        platform: [ linux, windows, macos, android, ios ]
         include:
           - platform: linux
             os: ubuntu-latest
