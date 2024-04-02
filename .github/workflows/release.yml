@@ -1,0 +1,77 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  push:
+    tags:
+      - "v*"
+  pull_request:
+    paths-ignore:
+      - README.md
+      - .github/**
+jobs:
+  build:
+    strategy:
+      matrix:
+        platform: [ linux, windows, macos, android]
+        include:
+          - platform: linux
+            os: ubuntu-latest
+          - platform: windows
+            os: windows-latest
+          - platform: macos
+            os: macos-latest
+          - platform: android
+            os: ubuntu-latest
+          - platform: ios
+            os: macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          check-latest: true
+          cache: gradle
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build
+        run: ./gradlew packageDistributionForCurrentOS
+        if: ${{ matrix.platform != 'android' }}
+      - name: Build
+        run: ./gradlew assembleDebug
+        if: ${{ matrix.platform == 'android' }}
+      - name: Upload package
+        uses: actions/upload-artifact@v3
+        if: ${{ matrix.platform != 'android' }}
+        with:
+          name: Pexels-${{ matrix.platform }}.zip
+          path: ./**/build/compose/binaries/main
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        if: ${{ matrix.platform == 'android' }}
+        with:
+          name: Pexels-${{ matrix.platform }}.zip
+          path: ./**/build/outputs/apk/debug/composeApp-debug.apk
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          path: ./
+      - name: Zip Artifacts
+        run: |
+          mkdir archived
+          ls -d1 *.zip | xargs -I name sh -c "cd name; zip -r ../archived/name ./; cd .."
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          fail_on_unmatched_files: true
+          files: "./archived/*.zip"
+          generate_release_notes: true
