@@ -1,4 +1,36 @@
-# Compose Multiplatform Application
+# Pexels
+
+## Supported Platforms
+
+| Platform                       | Supported | Screenshot                                         | Link    |
+|--------------------------------|-----------|----------------------------------------------------|---------|
+| Desktop(Linux, Windows, macOS) | ✅         | <img src="./screenshots/desktop.png" width="150"/> |         |
+| Web                            | ✅         | <img src="./screenshots/web.png" width="150"/>     |         |
+| iOS                            | ✅         | <img src="./screenshots/ios.png" width="100"/>     |         |
+| Android                        | ✅         | <img src="./screenshots/android.png" width="100"/> |         |
+
+## Features
+ - Pagination
+ - Pull to refresh
+ - Adaptive UI
+ - Photo zoom in and zoom out
+ - Transition
+ - Cached photo list data
+
+## Used Libraries
+ - [ktor](https://ktor.io/): A multiplatform asynchronous HTTP client, which allows you to make requests and handle responses.
+ - [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization): A multiplatform JSON serialization library.
+ - [koin](https://github.com/InsertKoinIO/koin): A pragmatic lightweight dependency injection framework for Kotlin & Kotlin Multiplatform.
+ - [Voyager](https://github.com/adrielcafe/voyager): A pragmatic navigation library for Compose.
+ - [Build Config](https://github.com/gmazzo/gradle-buildconfig-plugin): A plugin for generating BuildConstants.
+ - [KStore](https://github.com/xxfast/KStore): A tiny Kotlin multiplatform library that assists in saving and restoring objects to and from disk.
+ - [Napier](https://github.com/AAkira/Napier): A logger library for Kotlin Multiplatform.
+ - [coil](https://github.com/coil-kt/coil): Image loading for Compose Multiplatform.
+
+## Unit Tests
+[![Test](https://github.com/linroid/Pexels/actions/workflows/test.yml/badge.svg)](https://github.com/linroid/Pexels/actions/workflows/test.yml)
+ - `PexelsApiTest`
+ - `ObjectStoreTest`
 
 ## Before running!
  - check your system with [KDoctor](https://github.com/Kotlin/kdoctor)
