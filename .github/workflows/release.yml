@@ -12,14 +12,16 @@ jobs:
   build:
     strategy:
       matrix:
-        platform: [ linux, windows, macos, android]
+        platform: [ linux, windows, macos-x64, macos-arm64, android]
         include:
           - platform: linux
             os: ubuntu-latest
           - platform: windows
             os: windows-latest
-          - platform: macos
+          - platform: macos-arm64
             os: macos-latest
+          - platform: macos-x64
+            os: macos-12
           - platform: android
             os: ubuntu-latest
     runs-on: ${{ matrix.os }}

@@ -12,18 +12,20 @@ jobs:
     name: Unit Test
     strategy:
       matrix:
-        platform: [ linux, windows, macos, android, ios ]
+        platform: [ linux, windows, macos-x64, macos-arm64, android, ios ]
         include:
           - platform: linux
             os: ubuntu-latest
           - platform: windows
             os: windows-latest
-          - platform: macos
+          - platform: macos-arm64
             os: macos-latest
+          - platform: macos-x64
+            os: macos-12
           - platform: android
             os: ubuntu-latest
           - platform: ios
-            os: macos-latest
+            os: macos-12
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
