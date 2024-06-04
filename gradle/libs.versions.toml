@@ -1,10 +1,11 @@
 [versions]
 
-kotlin = "1.9.23"
-compose = "1.6.1"
-agp = "8.3.2"
+appdirs = "1.2.2"
+kotlin = "2.0.0"
+compose = "1.6.11"
+agp = "8.6.0-alpha03"
 androidx-activityCompose = "1.9.0"
-androidx-uiTest = "1.6.6"
+androidx-uiTest = "1.6.7"
 voyager = "1.1.0-alpha03"
 napier = "2.7.1"
 buildConfig = "5.3.5"
@@ -19,6 +20,7 @@ kstore = "0.7.1"
 androidx-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-testManifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-uiTest" }
 androidx-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "androidx-uiTest" }
+appdirs = { module = "net.harawata:appdirs", version.ref = "appdirs" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-screenmodel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
@@ -45,6 +47,7 @@ kstore-storage = { module = "io.github.xxfast:kstore-storage", version.ref = "ks
 [plugins]
 
 multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }

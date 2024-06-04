@@ -2,11 +2,13 @@ import com.android.build.api.dsl.ManagedVirtualDevice
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
     alias(libs.plugins.multiplatform)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose)
     alias(libs.plugins.android.application)
     alias(libs.plugins.buildConfig)
@@ -18,9 +20,11 @@ applyKtorWasmWorkaround(libs.versions.ktor.get())
 kotlin {
     androidTarget {
         compilations.all {
-            kotlinOptions {
-                jvmTarget = "${JavaVersion.VERSION_1_8}"
-                freeCompilerArgs += "-Xjdk-release=${JavaVersion.VERSION_1_8}"
+            compileTaskProvider {
+                compilerOptions {
+                    jvmTarget.set(JvmTarget.JVM_1_8)
+                    freeCompilerArgs.add("-Xjdk-release=${JavaVersion.VERSION_1_8}")
+                }
             }
         }
         // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-test.html
@@ -99,7 +103,7 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.kstore)
             implementation(libs.kstore.file)
-            implementation("net.harawata:appdirs:1.2.2")
+            implementation(libs.appdirs)
         }
 
         iosMain.dependencies {
@@ -146,9 +150,6 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.11"
-    }
 }
 
 compose.desktop {
@@ -164,10 +165,6 @@ compose.desktop {
             }
         }
     }
-}
-
-compose.experimental {
-    web.application {}
 }
 
 // https://youtrack.jetbrains.com/issue/KTOR-5587

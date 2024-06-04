@@ -1,5 +1,5 @@
 # Pexels
-A multiplatform client for [Pexels](https://www.pexels.com/) photos, powered by [Compose Muptiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)
+A multiplatform client for [Pexels](https://www.pexels.com/) photos, powered by [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)
 
 ## Supported Platforms
 

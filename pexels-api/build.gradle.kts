@@ -1,5 +1,6 @@
 import com.android.build.api.dsl.ManagedVirtualDevice
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
 	alias(libs.plugins.multiplatform)
@@ -10,9 +11,11 @@ plugins {
 kotlin {
 	androidTarget {
 		compilations.all {
-			kotlinOptions {
-				jvmTarget = "${JavaVersion.VERSION_1_8}"
-				freeCompilerArgs += "-Xjdk-release=${JavaVersion.VERSION_1_8}"
+			compileTaskProvider {
+				compilerOptions {
+					jvmTarget.set(JvmTarget.JVM_1_8)
+					freeCompilerArgs.add("-Xjdk-release=${JavaVersion.VERSION_1_8}")
+				}
 			}
 		}
 	}
