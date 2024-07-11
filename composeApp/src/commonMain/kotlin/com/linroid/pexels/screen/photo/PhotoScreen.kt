@@ -1,7 +1,10 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 
-package com.linroid.pexels.screen.feed
+package com.linroid.pexels.screen.photo
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.foundation.background
@@ -31,14 +34,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntOffset
 import coil3.compose.AsyncImage
 import com.linroid.pexels.api.model.Photo
@@ -49,12 +50,12 @@ import pexels.composeapp.generated.resources.Res
 import pexels.composeapp.generated.resources.button_back
 
 @Composable
-fun PhotoViewer(
+fun PhotoScreen(
+	sharedTransitionScope: SharedTransitionScope, animatedContentScope: AnimatedContentScope,
 	photo: Photo,
-	boundsInFeed: Rect,
 	onExit: () -> Unit
 ) {
-	var needTransition by remember { mutableStateOf(true) }
+	var needTransition by remember { mutableStateOf(false) }
 	val density = LocalDensity.current
 	val coroutineScope = rememberCoroutineScope()
 	val transitionProgress = remember { Animatable(if (needTransition) 0f else 1f) }
@@ -70,6 +71,10 @@ fun PhotoViewer(
 		topBar = {
 			TopAppBar(
 				title = {},
+				colors = TopAppBarDefaults.topAppBarColors(
+					containerColor = Color.Transparent,
+					navigationIconContentColor = Color.White
+				),
 				navigationIcon = {
 					IconButton(onClick = {
 						needTransition = true
@@ -84,7 +89,6 @@ fun PhotoViewer(
 						)
 					}
 				},
-				colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
 			)
 		}) {
 		BoxWithConstraints(
@@ -164,49 +168,41 @@ fun PhotoViewer(
 			) {
 				Box(Modifier
 					.size(with(density) {
-						if (needTransition) {
-							DpSize(
-								width = (boundsInFeed.width + transitionProgress.value * (photoInitSize.width - boundsInFeed.width)).toDp(),
-								height = (boundsInFeed.height + transitionProgress.value * (photoInitSize.height - boundsInFeed.height)).toDp(),
-							)
-						} else {
-							photoInitSize.toDpSize()
-						}
+						photoInitSize.toDpSize()
 					})
 					.offset {
-						if (needTransition) {
-							IntOffset(
-								x = (boundsInFeed.left + transitionProgress.value * (photoInitOffset.x - boundsInFeed.left)).toInt(),
-								y = (boundsInFeed.top + transitionProgress.value * (photoInitOffset.y - boundsInFeed.top)).toInt(),
-							)
-						} else {
-							IntOffset(photoInitOffset.x.toInt(), photoInitOffset.y.toInt())
-						}
+						IntOffset(photoInitOffset.x.toInt(), photoInitOffset.y.toInt())
 					}
 					.graphicsLayer(
 						scaleX = scale.value, scaleY = scale.value,
 						translationX = offset.value.x, translationY = offset.value.y
 					)
 				) {
-					if (!isOriginalLoaded) {
-						AsyncImage(
-							modifier = Modifier.fillMaxSize(),
-							model = photo.src.medium,
+					with(sharedTransitionScope) {
+						if (!isOriginalLoaded) {
+							AsyncImage(
+								modifier = Modifier.fillMaxSize().sharedElement(
+									sharedTransitionScope.rememberSharedContentState(key = "photo-${photo.id}"),
+									animatedVisibilityScope = animatedContentScope
+								),
+								model = photo.src.medium,
+								contentScale = ContentScale.FillBounds,
+								contentDescription = photo.alt,
+							)
+						}
+						AsyncImage(modifier = Modifier.fillMaxSize().sharedElement(
+							sharedTransitionScope.rememberSharedContentState(key = "photo-${photo.id}"),
+							animatedVisibilityScope = animatedContentScope
+						),
+							model = photo.src.original,
 							contentScale = ContentScale.FillBounds,
 							contentDescription = photo.alt,
-						)
+							onState = { state ->
+								if (state.painter != null) {
+									isOriginalLoaded = true
+								}
+							})
 					}
-					AsyncImage(
-						modifier = Modifier.fillMaxSize(),
-						model = photo.src.original,
-						contentScale = ContentScale.FillBounds,
-						contentDescription = photo.alt,
-						onState = { state ->
-							if (state.painter != null) {
-								isOriginalLoaded = true
-							}
-						}
-					)
 					if (!needTransition && !isOriginalLoaded) {
 						CircularProgressIndicator(Modifier.align(Alignment.Center))
 					}

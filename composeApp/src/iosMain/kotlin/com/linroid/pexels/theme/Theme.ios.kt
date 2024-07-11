@@ -1,5 +1,6 @@
 package com.linroid.pexels.theme
 
+import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import platform.UIKit.UIApplication
@@ -14,4 +15,9 @@ internal actual fun SystemAppearance(isDark: Boolean) {
             if (isDark) UIStatusBarStyleDarkContent else UIStatusBarStyleLightContent
         )
     }
+}
+
+@Composable
+internal actual fun provideColorScheme(isSystemDark: Boolean): ColorScheme {
+    return if (isSystemDark) darkScheme else lightScheme
 }

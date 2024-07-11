@@ -1,7 +1,10 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 
 package com.linroid.pexels.screen.feed
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -25,37 +28,24 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.boundsInWindow
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.screen.Screen
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.linroid.pexels.api.model.Photo
-import org.jetbrains.compose.resources.stringResource
-import pexels.composeapp.generated.resources.Res
-import pexels.composeapp.generated.resources.app_name
+import com.linroid.pexels.components.PexelsAppBar
 import kotlin.math.absoluteValue
 
 val avatarColors =
@@ -71,104 +61,77 @@ val avatarColors =
 		Color(0xFF512DA8),
 	)
 
-data class ViewingPhotoData(val photo: Photo, val boundsInFeed: Rect)
-
-class CuratedScreen : Screen {
-	@Composable
-	override fun Content() {
-		var viewingPhotoData by remember { mutableStateOf<ViewingPhotoData?>(null) }
-
-		Box {
-			Scaffold(topBar = { PexelsAppBar() }) {
-				val feedModel = rememberScreenModel { FeedModel() }
-				val pullToRefreshState = rememberPullToRefreshState()
-				LaunchedEffect(feedModel.uiState) {
-					if (feedModel.uiState == FeedModel.UiState.Refreshing) {
-						pullToRefreshState.startRefresh()
-					} else {
-						pullToRefreshState.endRefresh()
+@Composable
+fun HomeScreen(
+	sharedTransitionScope: SharedTransitionScope,
+	animatedContentScope: AnimatedContentScope,
+	viewModel: HomeViewModel = viewModel { HomeViewModel() },
+	onViewPhoto: (photo: Photo) -> Unit,
+) {
+	Scaffold(topBar = { PexelsAppBar() }) {
+		PullToRefreshBox(
+			isRefreshing = viewModel.uiState == HomeViewModel.UiState.Refreshing,
+			onRefresh = viewModel::refresh
+		) {
+			BoxWithConstraints(
+				Modifier.fillMaxSize()
+					.padding(top = it.calculateTopPadding())
+			) {
+				val density = LocalDensity.current
+				val staggeredGridStyle by derivedStateOf {
+					with(density) {
+						StaggeredGridStyle.fromWidth(constraints.maxWidth.toDp())
 					}
 				}
-				LaunchedEffect(pullToRefreshState.isRefreshing) {
-					if (pullToRefreshState.isRefreshing) {
-						feedModel.refresh()
-					}
-				}
-				BoxWithConstraints(
-					Modifier.fillMaxSize()
-						.padding(top = it.calculateTopPadding())
-						.nestedScroll(pullToRefreshState.nestedScrollConnection)
-				) {
-					val density = LocalDensity.current
-					val staggeredGridStyle by derivedStateOf {
-						with(density) {
-							StaggeredGridStyle.fromWidth(constraints.maxWidth.toDp())
-						}
-					}
-					LazyVerticalStaggeredGrid(
-						columns = StaggeredGridCells.Fixed(staggeredGridStyle.columnCount),
-						contentPadding = PaddingValues(
-							horizontal = staggeredGridStyle.horizontalPadding,
-							vertical = staggeredGridStyle.verticalPadding
-						)
-					) {
-						items(feedModel.photos, key = { photo -> photo.id }) { photo ->
-							PhotoItem(photo, staggeredGridStyle) { bounds ->
-								viewingPhotoData = ViewingPhotoData(photo, bounds)
-							}
-						}
-						if (feedModel.uiState == FeedModel.UiState.Idle
-							&& feedModel.uiState != FeedModel.UiState.End
-							|| feedModel.uiState == FeedModel.UiState.LoadingMore
-						) {
-							item {
-								LaunchedEffect(feedModel.uiState) {
-									feedModel.loadMore()
-								}
-								Card(
-									Modifier.padding(bottom = 8.dp, start = 2.dp, end = 2.dp),
-									shape = RoundedCornerShape(4.dp)
-								) {
-									Box(Modifier.fillMaxSize().padding(vertical = 56.dp)) {
-										CircularProgressIndicator(Modifier.align(Alignment.Center))
-									}
-								}
-							}
-						}
-					}
-					PullToRefreshContainer(
-						modifier = Modifier.align(Alignment.TopCenter),
-						state = pullToRefreshState,
+				LazyVerticalStaggeredGrid(
+					columns = StaggeredGridCells.Fixed(staggeredGridStyle.columnCount),
+					contentPadding = PaddingValues(
+						horizontal = staggeredGridStyle.horizontalPadding,
+						vertical = staggeredGridStyle.verticalPadding
 					)
+				) {
+					items(viewModel.photos, key = { photo -> photo.id }) { photo ->
+						PhotoItem(
+							sharedTransitionScope,
+							animatedContentScope,
+							photo,
+							staggeredGridStyle
+						) {
+							onViewPhoto(photo)
+						}
+					}
+					if (viewModel.uiState == HomeViewModel.UiState.Idle
+						&& viewModel.uiState != HomeViewModel.UiState.End
+						|| viewModel.uiState == HomeViewModel.UiState.LoadingMore
+					) {
+						item {
+							LaunchedEffect(viewModel.uiState) {
+								viewModel.loadMore()
+							}
+							Card(
+								Modifier.padding(bottom = 8.dp, start = 2.dp, end = 2.dp),
+								shape = RoundedCornerShape(4.dp)
+							) {
+								Box(Modifier.fillMaxSize().padding(vertical = 56.dp)) {
+									CircularProgressIndicator(Modifier.align(Alignment.Center))
+								}
+							}
+						}
+					}
 				}
-			}
-			viewingPhotoData?.let { data ->
-				PhotoViewer(data.photo, data.boundsInFeed, onExit = {
-					viewingPhotoData = null
-				})
 			}
 		}
-	}
 
-
-}
-
-@Composable
-private fun PexelsAppBar() {
-	Surface(shadowElevation = 4.dp) {
-		TopAppBar(
-			title = {
-				Text(stringResource(Res.string.app_name))
-			},
-		)
 	}
 }
 
 @Composable
 private fun PhotoItem(
+	sharedTransitionScope: SharedTransitionScope,
+	animatedContentScope: AnimatedContentScope,
 	photo: Photo,
 	staggeredGridStyle: StaggeredGridStyle,
-	onViewPhoto: (boundsInFeed: Rect) -> Unit
+	onViewPhoto: () -> Unit
 ) {
 	val density = LocalDensity.current
 	Card(
@@ -179,24 +142,24 @@ private fun PhotoItem(
 		),
 		shape = RoundedCornerShape(staggeredGridStyle.cardRadius)
 	) {
-		var boundsInFeed: Rect? = null
 		Column(Modifier.clickable {
-			if (boundsInFeed != null) {
-				onViewPhoto(boundsInFeed!!)
-			}
+			onViewPhoto()
 		}) {
 			BoxWithConstraints {
 				val photoHeight = constraints.maxWidth / (photo.width.toFloat() / photo.height)
-				AsyncImage(
-					modifier = Modifier.fillMaxWidth()
-						.height(with(density) { photoHeight.toDp() })
-						.onGloballyPositioned {
-							boundsInFeed = it.boundsInWindow()
-						},
-					model = photo.src.medium,
-					contentScale = ContentScale.FillBounds,
-					contentDescription = photo.alt,
-				)
+				with(sharedTransitionScope) {
+					AsyncImage(
+						modifier = Modifier.fillMaxWidth()
+							.height(with(density) { photoHeight.toDp() })
+							.sharedElement(
+								sharedTransitionScope.rememberSharedContentState(key = "photo-${photo.id}"),
+								animatedVisibilityScope = animatedContentScope
+							),
+						model = photo.src.medium,
+						contentScale = ContentScale.FillBounds,
+						contentDescription = photo.alt,
+					)
+				}
 			}
 			Row(
 				Modifier.padding(staggeredGridStyle.photographerPadding),
