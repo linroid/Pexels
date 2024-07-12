@@ -55,16 +55,10 @@ fun PhotoScreen(
 	photo: Photo,
 	onExit: () -> Unit
 ) {
-	var needTransition by remember { mutableStateOf(false) }
 	val density = LocalDensity.current
 	val coroutineScope = rememberCoroutineScope()
-	val transitionProgress = remember { Animatable(if (needTransition) 0f else 1f) }
 	BackHandler {
-		needTransition = true
-		coroutineScope.launch {
-			transitionProgress.animateTo(0f)
-			onExit()
-		}
+		onExit()
 	}
 	Scaffold(
 		containerColor = Color.Transparent,
@@ -76,13 +70,7 @@ fun PhotoScreen(
 					navigationIconContentColor = Color.White
 				),
 				navigationIcon = {
-					IconButton(onClick = {
-						needTransition = true
-						coroutineScope.launch {
-							transitionProgress.animateTo(0f)
-							onExit()
-						}
-					}) {
+					IconButton(onClick = onExit) {
 						Icon(
 							imageVector = Icons.AutoMirrored.Filled.ArrowBack,
 							contentDescription = stringResource(Res.string.button_back)
@@ -93,7 +81,7 @@ fun PhotoScreen(
 		}) {
 		BoxWithConstraints(
 			Modifier.fillMaxSize()
-			.background(Color.Black.copy(alpha = transitionProgress.value))
+			.background(Color.Black)
 		) {
 			val boxAspectRatio = constraints.maxWidth.toFloat() / constraints.maxHeight
 			val photoAspectRatio = photo.width.toFloat() / photo.height
@@ -120,12 +108,6 @@ fun PhotoScreen(
 
 			var isOriginalLoaded by remember { mutableStateOf(false) }
 
-			LaunchedEffect(Unit) {
-				if (needTransition) {
-					transitionProgress.animateTo(1.0f) {}
-					needTransition = false
-				}
-			}
 			val scale = remember { Animatable(1f) }
 			val offset = remember { Animatable(Offset(0f, 0f), Offset.VectorConverter) }
 			Box(
@@ -203,7 +185,7 @@ fun PhotoScreen(
 								}
 							})
 					}
-					if (!needTransition && !isOriginalLoaded) {
+					if (!isOriginalLoaded) {
 						CircularProgressIndicator(Modifier.align(Alignment.Center))
 					}
 				}

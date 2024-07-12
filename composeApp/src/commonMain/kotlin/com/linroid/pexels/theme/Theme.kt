@@ -258,7 +258,7 @@ val unspecified_scheme = ColorFamily(
 internal expect fun provideColorScheme(isSystemDark: Boolean): ColorScheme
 
 @Composable
-internal expect fun SystemAppearance(isDark: Boolean)
+internal expect fun SystemAppearance(isDarkTheme: Boolean)
 
 internal val LocalIsDarkTheme = compositionLocalOf { mutableStateOf(true) }
 

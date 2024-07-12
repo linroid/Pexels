@@ -4,7 +4,7 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 
 @Composable
-internal actual fun SystemAppearance(isDark: Boolean) {
+internal actual fun SystemAppearance(isDarkTheme: Boolean) {
 }
 
 @Composable
